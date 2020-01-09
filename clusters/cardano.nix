@@ -153,7 +153,7 @@ let
           byronProxySrc = sourcePaths.cardano-byron-proxy;
           loggerUnmodFile = byronProxySrc + "/cfg/logging.yaml";
           loggerUnmod = __readFile loggerUnmodFile;
-          loggerMod = lib.replaceStrings [ "hasPrometheus: 12799" ] [ "hasPrometheus: 12796" ] loggerUnmod;
+          loggerMod = lib.replaceStrings [ "hasPrometheus: [\"127.0.0.1\",12799]" ] [ "hasPrometheus: [\"127.0.0.1\",12796]" ] loggerUnmod;
           loggerModFile = __toFile "logging-prom-12796.yaml" loggerMod;
         in
           loggerModFile;

@@ -5,7 +5,7 @@ let
   cardano-sl = import sourcePaths.cardano-sl { gitrev = sourcePaths.cardano-sl.rev; };
   explorerFrontend = cardano-sl.explorerFrontend;
   loggerConfig = import ../modules/iohk-monitoring-config.nix // {
-    hasPrometheus = 12797;
+    hasPrometheus = [ "127.0.0.1" 12797 ];
     hasEKG = 12798;
   };
   # We need first 3 signing keys and delegation certificate
@@ -34,19 +34,15 @@ in {
     nodeConfig = globals.environmentConfig.nodeConfig // loggerConfig;
     extraArgs = [
       "--trace-block-fetch-client"
-      "--trace-block-fetch-decisions"
       "--trace-block-fetch-protocol"
       "--trace-block-fetch-server"
       "--trace-chain-sync-protocol"
-      "--trace-forge"
       "--trace-local-chain-sync-protocol"
       "--trace-local-tx-submission-protocol"
       "--trace-local-tx-submission-server"
-      "--trace-mempool"
       "--trace-tx-inbound"
       "--trace-tx-outbound"
       "--trace-tx-submission-protocol"
-      "--tracing-verbosity-maximal"
     ];
   };
 

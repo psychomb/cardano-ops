@@ -2,7 +2,7 @@
   defaultBackends = [ "KatipBK" ];
   defaultScribes = [ [ "StdoutSK" "stdout" ] [ "FileSK" "/var/lib/cardano-node/logs/node.json" ] ];
   hasEKG = 12780;
-  hasPrometheus = 12798;
+  hasPrometheus = [ "127.0.0.1" 12798 ];
   minSeverity = "Info";
   options = {
     cfokey = { value = "Release-1.0.0"; };
