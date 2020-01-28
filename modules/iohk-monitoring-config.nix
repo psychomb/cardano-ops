@@ -3,7 +3,7 @@
   defaultScribes = [ [ "StdoutSK" "stdout" ] [ "FileSK" "/var/lib/cardano-node/logs/node.json" ] ];
   hasEKG = 12780;
   hasPrometheus = [ "127.0.0.1" 12798 ];
-  minSeverity = "Info";
+  minSeverity = "Debug";
   options = {
     cfokey = { value = "Release-1.0.0"; };
     mapBackends = {
@@ -84,4 +84,29 @@
         };
       }
     ];
+
+  TracingVerbosity = "MaximalVerbosity";
+  TraceBlockFetchClient = true;
+  TraceBlockFetchDecisions = true;
+  TraceBlockFetchProtocol = true;
+  TraceBlockFetchProtocolSerialised = false;
+  TraceBlockFetchServer = true;
+  TraceChainDb = false;
+  TraceChainSyncClient = false;
+  TraceChainSyncBlockServer = false;
+  TraceChainSyncHeaderServer = false;
+  TraceChainSyncProtocol = true;
+  TraceDNSResolver = false;
+  TraceDNSSubscription = false;
+  TraceErrorPolicy = false;
+  TraceForge = true;
+  TraceIpSubscription = false;
+  TraceLocalChainSyncProtocol = true;
+  TraceLocalTxSubmissionProtocol = true;
+  TraceLocalTxSubmissionServer = true;
+  TraceMempool = true;
+  TraceMux = false;
+  TraceTxInbound = true;
+  TraceTxOutbound = true;
+  TraceTxSubmissionProtocol = true;
 }

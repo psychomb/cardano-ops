@@ -32,10 +32,6 @@ avvm_entry_balance=10000000000000
 not_so_secret=2718281828
 
 tmpdir="`mktemp`.d"
-common=(
-        --log-config                 "${CONFIGDIR}/configuration-silent.yaml"
-        --real-pbft
-)
 args=(
       --genesis-output-dir           "${tmpdir}"
       --start-time                   "${start_time}"
@@ -54,7 +50,7 @@ args=(
 set -xe
 RUNNER=${RUNNER:-cabal new-run -v0 --}
 
- cardano-cli "${common[@]}" genesis "${args[@]}" "$@"
+ cardano-cli genesis --real-pbft "${args[@]}" "$@"
 
 # move new genesis to configuration
 GENHASH=` cardano-cli "${common[@]}" print-genesis-hash --genesis-json "${tmpdir}/genesis.json" | tail -1`

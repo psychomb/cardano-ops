@@ -19,16 +19,6 @@ let
     "--configuration-key ${globals.environmentConfig.confKey}"
     "--topology ${cfg.topologyYaml}"
     "--node-id ${name}"
-    "--trace-block-fetch-client"
-    "--trace-block-fetch-server"
-    "--trace-tx-inbound"
-    "--trace-tx-outbound"
-    "--trace-local-tx-submission-server"
-    "--trace-chain-sync-protocol"
-    "--trace-block-fetch-protocol"
-    "--trace-tx-submission-protocol"
-    "--trace-local-chain-sync-protocol"
-    "--trace-local-tx-submission-protocol"
   ] ++ cfg.extraCommandArgs);
 in {
 

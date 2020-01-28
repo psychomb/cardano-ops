@@ -32,18 +32,7 @@ in {
     };
     enable = true;
     nodeConfig = globals.environmentConfig.nodeConfig // loggerConfig;
-    extraArgs = [
-      "--trace-block-fetch-client"
-      "--trace-block-fetch-protocol"
-      "--trace-block-fetch-server"
-      "--trace-chain-sync-protocol"
-      "--trace-local-chain-sync-protocol"
-      "--trace-local-tx-submission-protocol"
-      "--trace-local-tx-submission-server"
-      "--trace-tx-inbound"
-      "--trace-tx-outbound"
-      "--trace-tx-submission-protocol"
-    ];
+    extraArgs = [];
   };
 
   users.users.cardano-node.extraGroups = [ "keys" ];
