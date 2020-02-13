@@ -16,9 +16,9 @@ self: super: {
     environmentConfig = rec {
       relays = "relays.${domain}";
       edgeNodes = [
-        "18.196.133.111"
-        "13.239.95.144"
-        "35.173.24.158"
+        "3.126.182.217"
+        "13.236.37.155"
+        "3.211.37.144"
       ];
       edgePort = self.globals.cardanoNodePort;
       confKey = abort "legacy nodes not supported by shelley-dev environment";

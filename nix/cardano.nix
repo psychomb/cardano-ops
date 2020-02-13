@@ -5,7 +5,7 @@ let
   };
 in {
 
-  inherit ((import self.sourcePaths.cardano-node {}).nix-tools.cexes.cardano-node) cardano-cli;
+  inherit ((import self.sourcePaths.cardano-node {}).haskellPackages.cardano-node.components.exes) cardano-cli;
 
 
   cardano-node-legacy = cardano-sl-pkgs.nix-tools.cexes.cardano-sl-node.cardano-node-simple;

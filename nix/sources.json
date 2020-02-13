@@ -24,15 +24,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-node": {
-        "branch": "try-ouroboros-network-with-bigger-requests-sizes",
+        "branch": "fix-cardano-node-service-topology-default",
         "description": null,
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-node",
-        "rev": "0af73afaa4a18fc5452106c6d198e26a4f8497af",
-        "sha256": "0dhxh25ywh0lbj942mbia8f3365xqb26qig8r8shbfdjny02xwv6",
+        "rev": "c7fded6ab983778af95f46ad8bb081c5fd937a25",
+        "sha256": "0qy32frxw7nf016cs19vmqc37mklmqfc7sf8p79yxqr3vzk8lbh0",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-node/archive/0af73afaa4a18fc5452106c6d198e26a4f8497af.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-node/archive/c7fded6ab983778af95f46ad8bb081c5fd937a25.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
         "version": "daf5328179d7603a79cba1c4c6884af480fd33dc"
     },
