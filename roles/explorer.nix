@@ -31,7 +31,7 @@ in {
   services.cardano-graphql.enable = true;
   services.cardano-node = {
     enable = true;
-    inherit nodeId topology;
+    inherit topology;
     extraArgs = [ "+RTS" "-N2" "-A10m" "-qg" "-qb" "-M3G" "-RTS" ];
     environment = globals.environmentName;
     environments = {
