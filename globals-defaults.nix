@@ -21,6 +21,7 @@ in {
 
   withExplorer = true;
   withLegacyExplorer = true;
+  withTxGenerator = false;
 
   environments = pkgs.iohkNix.cardanoLib.environments;
 
