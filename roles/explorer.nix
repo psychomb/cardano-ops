@@ -1,19 +1,34 @@
-{ config, name, nodes, ... }:
+{ config, name, lib, nodes, resources, ... }:
 with import ../nix {};
 
 let
   nodeCfg = config.services.cardano-node;
   iohkNix = import sourcePaths.iohk-nix {};
+
   cardano-sl = import sourcePaths.cardano-sl { gitrev = sourcePaths.cardano-sl.rev; };
   explorerFrontend = cardano-sl.explorerFrontend;
   postgresql12 = (import sourcePaths.nixpkgs-postgresql12 {}).postgresql_12;
-  nodeId = config.node.nodeId;
+  nodePort = globals.cardanoNodePort;
+  nodeId = 99;
   hostAddr = getListenIp nodes.${name};
   socketPath = nodeCfg.socketPath or "/run/cardano-node/node-${toString nodeId}.socket";
+  hostName = name: "${name}.cardano";
+  cardanoNodes = lib.filterAttrs
+    (_: node: node.config.services.cardano-node.enable
+           or node.config.services.byron-proxy.enable or false)
+    nodes;
+  cardanoHostList = lib.mapAttrsToList (nodeName: node: {
+    name = hostName nodeName;
+    ip = getStaticRouteIp resources nodes nodeName;
+  }) cardanoNodes;
+  producers = map (n: {
+    addr = if (nodes ? ${n}) then hostName n else n;
+    port = nodePort;
+    valency = 1;
+  }) (map (x: x.name) globals.topology.coreNodes);
   topology =  builtins.toFile "topology.yaml" (builtins.toJSON {
     Producers = producers;
   });
-  socketPath = nodeCfg.socketPath or "/run/cardano-node/node-${toString nodeId}.socket";
 in {
   imports = [
     (sourcePaths.cardano-node + "/nix/nixos")
@@ -25,6 +40,10 @@ in {
     ../modules/common.nix
   ];
 
+  networking.extraHosts = ''
+    ${lib.concatStringsSep "\n" (map (host: "${host.ip} ${host.name}") cardanoHostList)}
+  '';
+
   environment.systemPackages = with pkgs; [ bat fd lsof netcat ncdu ripgrep tree vim cardano-cli ];
   services.postgresql.package = postgresql12;
 
@@ -32,9 +51,9 @@ in {
   services.cardano-graphql.enable = true;
   services.cardano-node = {
     enable = true;
-    inherit topology;
-    extraArgs = [ "+RTS" "-N2" "-A10m" "-qg" "-qb" "-M3G" "-RTS" ];
+    inherit nodeId topology;
     environment = globals.environmentName;
+    # extraArgs = [ "+RTS" "-N2" "-A10m" "-qg" "-qb" "-M3G" "-RTS" ];
     environments = {
       "${globals.environmentName}" = globals.environmentConfig;
     };
@@ -43,7 +62,7 @@ in {
       hasPrometheus = [ hostAddr globals.cardanoNodePrometheusExporterPort ];
     };
   };
-  systemd.services.cardano-node.serviceConfig.MemoryMax = "3.5G";
+  # systemd.services.cardano-node.serviceConfig.MemoryMax = "3.5G";
   # TODO remove next two line for next release cardano-node 1.7 release:
   systemd.services.cardano-node.scriptArgs = toString nodeId;
   systemd.services.cardano-node.preStart = ''
@@ -52,6 +71,12 @@ in {
       mv ${nodeCfg.databasePath}-0 ${nodeCfg.databasePath}
     fi
   '';
+
+  services.dnsmasq = {
+    enable = true;
+    servers = [ "127.0.0.1" ];
+  };
+
   services.cardano-exporter = {
     enable = true;
     cluster = globals.environmentName;
@@ -74,6 +99,10 @@ in {
     '';
   };
 
+  services.cardano-explorer = {
+    enable = true;
+    cluster = globals.environmentName;
+  };
   services.cardano-explorer-webapi.enable = true;
   services.cardano-tx-submit-webapi = {
     environment = globals.environmentConfig;
