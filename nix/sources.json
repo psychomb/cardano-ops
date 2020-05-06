@@ -36,16 +36,17 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-node": {
-        "branch": "tags/1.6.0",
+        "branch": "master",
         "description": null,
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-node",
-        "rev": "a01b3594b6d7b478b235ca9d305a516c7cb28972",
-        "sha256": "0wxzflz0fz6gzj5y1571r4x7ks2z59mpf53k1wr56fv48qbfrkhw",
+        "rev": "aa5db9f153ebe6e5f88d22133af8dcd8f2a2769b",
+        "sha256": "19iqx457y476liiqjfl9jskk3qx05xdjziw7gjbiljwjc2ncp32x",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-node/archive/a01b3594b6d7b478b235ca9d305a516c7cb28972.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+        "url": "https://github.com/input-output-hk/cardano-node/archive/aa5db9f153ebe6e5f88d22133af8dcd8f2a2769b.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
+        "version": "376562b0cb6dfde4b9f41e9f3ccea45cbfb41c22"
     },
     "cardano-sl": {
         "branch": "3.1.0",
