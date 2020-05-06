@@ -10,6 +10,9 @@ let
   nodeId = config.node.nodeId;
   hostAddr = getListenIp nodes.${name};
   socketPath = nodeCfg.socketPath or "/run/cardano-node/node-${toString nodeId}.socket";
+  topology =  builtins.toFile "topology.yaml" (builtins.toJSON {
+    Producers = producers;
+  });
 in {
   imports = [
     (sourcePaths.cardano-node + "/nix/nixos")
@@ -28,7 +31,7 @@ in {
   services.cardano-graphql.enable = true;
   services.cardano-node = {
     enable = true;
-    inherit nodeId;
+    inherit nodeId topology;
     extraArgs = [ "+RTS" "-N2" "-A10m" "-qg" "-qb" "-M3G" "-RTS" ];
     environment = globals.environmentName;
     environments = {
