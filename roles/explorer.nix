@@ -13,6 +13,7 @@ let
   topology =  builtins.toFile "topology.yaml" (builtins.toJSON {
     Producers = producers;
   });
+  socketPath = nodeCfg.socketPath or "/run/cardano-node/node-${toString nodeId}.socket";
 in {
   imports = [
     (sourcePaths.cardano-node + "/nix/nixos")
@@ -46,15 +47,16 @@ in {
   # TODO remove next two line for next release cardano-node 1.7 release:
   systemd.services.cardano-node.scriptArgs = toString nodeId;
   systemd.services.cardano-node.preStart = ''
+    mkdir -p /run/cardano-node
     if [ -d ${nodeCfg.databasePath}-0 ]; then
       mv ${nodeCfg.databasePath}-0 ${nodeCfg.databasePath}
     fi
   '';
   services.cardano-exporter = {
     enable = true;
-    inherit socketPath;
     cluster = globals.environmentName;
     environment = globals.environmentConfig;
+    socketPath = lib.mkForce socketPath;
     logConfig = iohkNix.cardanoLib.defaultExplorerLogConfig // { hasPrometheus = [ hostAddr 12698 ]; };
     #environment = targetEnv;
   };
@@ -73,6 +75,10 @@ in {
   };
 
   services.cardano-explorer-webapi.enable = true;
+  services.cardano-tx-submit-webapi = {
+    environment = globals.environmentConfig;
+    socketPath = lib.mkForce socketPath;
+  };
   networking.firewall.allowedTCPPorts = [ 80 443 ];
 
   services.nginx = {
