@@ -37,6 +37,7 @@ in {
     (sourcePaths.cardano-rest + "/nix/nixos")
     (sourcePaths.cardano-db-sync + "/nix/nixos")
     ../modules/common.nix
+    ../modules/base-service.nix
     ../modules/cardano-postgres.nix
   ];
 
@@ -90,7 +91,6 @@ in {
     servers = [ "127.0.0.1" ];
   };
 
-  systemd.services.cardano-node.serviceConfig.MemoryMax = "3.5G";
   services.cardano-db-sync = {
     enable = true;
     cluster = globals.environmentName;
@@ -103,6 +103,11 @@ in {
       database = "cexplorer";
     };
   };
+  systemd.services.cardano-db-sync = {
+    serviceConfig = {
+      Group = lib.mkForce "cardano-node";
+    };
+  };
   systemd.services.cardano-explorer-node = {
     wants = [ "cardano-node.service" ];
     serviceConfig.PermissionsStartOnly = "true";
@@ -112,9 +117,10 @@ in {
         echo loop $x: waiting for "${config.services.cardano-db-sync.socketPath}" 5 sec...
       sleep 5
       done
-      chgrp cexplorer "${config.services.cardano-db-sync.socketPath}"
+      # chgrp cexplorer "${config.services.cardano-db-sync.socketPath}"
       chmod g+w "${config.services.cardano-db-sync.socketPath}"
     '';
+    script = "true";
   };
 
   services.cardano-explorer-api = {
