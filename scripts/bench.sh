@@ -18,7 +18,8 @@ USAGE:  $(basename "$0") OPTIONS.. OP OP-ARGS..
 
   Options:
 
-    --deploy              Deploy before doing anything.
+    --deploy              Before further business, deploy the full cluster.
+    --deploy-fast         Before further business, deploy just the explorer.
     --include HOST        Deploy only to this host.
     --select JQEXPR       JQ log commands:  subset entries with select(JQEXPR).
     --goggles-ip          Log commands:  Replace IP addresses with "HOST-name".
@@ -63,18 +64,24 @@ EOF
 
 goggles_fn='cat'
 remote_jq_opts=(--compact-output)
+
+## Default is to deploy the entire cluster:
+cluster_member_list=(a b c explorer)
+deploy_list=("${cluster_member_list[@]}")
+
 local_jq_opts=()
 wait_nodes=25
 wait_txs=85
 
 main() {
-        local deploy= nixops_include=
+        local deploy=
         local jq_select='cat'
 
         while test $# -ge 1
         do case "$1" in
            --deploy )             deploy=t;;
-           --include )            nixops_include="--include $2"; shift;;
+           --deploy-fast )        deploy=t; deploy_list=(explorer);;
+           --include )            deploy_list=("$2"); shift;;
            --select )             jq_select="jq 'select ($2)'"; shift;;
            --goggles-ip )         goggles_fn=goggles_ip;;
            --wait-nodes )         wait_nodes="$2"; shift;;
@@ -91,6 +98,10 @@ main() {
 
         export goggles_fn remote_jq_opts local_jq_opts
 
+        if test "${deploy_list[*]}" = "${cluster_member_list[*]}"
+        then nixops_include=
+        else nixops_include="--include ${deploy_list[*]}"
+        fi
         if test -n "${deploy}"
         then echo "--( Deploying commit $(git rev-parse HEAD | cut -c-8) / $(git symbolic-ref --short HEAD) ($(if git diff --quiet --exit-code
                          then echo pristine
