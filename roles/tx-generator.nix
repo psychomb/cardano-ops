@@ -74,7 +74,7 @@ in {
     dsmPassthrough = {
       # rtsOpts = ["-xc"];
     };
-  };
+  } // globals.environmentConfig.generatorConfig;
 
   services.cardano-node = {
     nodeConfig = lib.mkForce (globals.environmentConfig.nodeConfig // {

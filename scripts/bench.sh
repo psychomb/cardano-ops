@@ -18,8 +18,8 @@ USAGE:  $(basename "$0") OPTIONS.. OP OP-ARGS..
 
   Options:
 
-    --deploy              Before further business, deploy the full cluster.
-    --deploy-fast         Before further business, deploy just the explorer.
+    --deploy-faull        Before further business, deploy the full cluster.
+    --deploy              Before further business, deploy just the explorer.
     --include HOST        Deploy only to this host.
     --select JQEXPR       JQ log commands:  subset entries with select(JQEXPR).
     --goggles-ip          Log commands:  Replace IP addresses with "HOST-name".
@@ -80,8 +80,8 @@ main() {
 
         while test $# -ge 1
         do case "$1" in
-           --deploy )             deploy=t;;
-           --deploy-fast )        deploy=t; deploy_list=(explorer);;
+           --deploy-full )        deploy=t;;
+           --deploy      )        deploy=t; deploy_list=(explorer);;
            --include )            deploy_list=("$2"); shift;;
            --select )             jq_select="jq 'select ($2)'"; shift;;
            --goggles-ip )         goggles_fn=goggles_ip;;
