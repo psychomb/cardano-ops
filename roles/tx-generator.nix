@@ -11,7 +11,7 @@ let
 
   cardanoNodes = lib.filterAttrs
     (_: node: node.config.services.cardano-node.enable or false &&
-              ! (node.config.services.cardano-explorer.enable or false))
+              ! (node.config.services.cardano-db-sync.enable or false))
     nodes;
 
   # benchmarking-src = ../../cardano-benchmarking;
@@ -74,7 +74,7 @@ in {
     dsmPassthrough = {
       # rtsOpts = ["-xc"];
     };
-  };
+  } // globals.environmentConfig.generatorConfig;
 
   services.cardano-node = {
     nodeConfig = lib.mkForce (globals.environmentConfig.nodeConfig // {
@@ -146,6 +146,8 @@ in {
         destDir = "/var/lib/keys";
     };
   };
+
+  services.cardano-explorer-api.enable = lib.mkForce true;
 
   users.users.cardano-node.extraGroups = [ "keys" ];
 }
