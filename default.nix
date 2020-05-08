@@ -35,8 +35,7 @@
         done
      '';
   in  mkShell {
-    buildInputs = [ niv nixops nix cardano-cli telnet dnsutils mkDevGenesis nix-diff migrate-keys ] ++
-                  (with cardanoSL.nix-tools.exes; [ cardano-sl-auxx cardano-sl-tools ]);
+    buildInputs = [ niv nixops nix cardano-cli telnet dnsutils mkDevGenesis nix-diff migrate-keys ];
     NIX_PATH = "nixpkgs=${path}";
     NIXOPS_DEPLOYMENT = "${globals.deploymentName}";
     passthru = {
