@@ -296,7 +296,7 @@ EOF
         cp "${deploylog}"     "${dir}"/logs/deploy.log
         mv "${deploylog}"     runs/"${tag}".deploy.log
 
-        local date=$(date) stamp=$(date +%s)
+        local date=$(date "+%Y-%m-%d-%H:%M:%S") stamp=$(date +%s)
         touch                 "${dir}/${date}"
 
         local nixops_meta
@@ -490,22 +490,26 @@ EOF
                                       ./db-analyser.sh ${tag}" > 'logs/db-analysis.log'
         nixops scp --from explorer "${tag}.db-analysis.tar.xz" 'logs/db-analysis.tar.xz'
 
-        echo "--( Fetching logs:  explorer"
+        echo "--( Fetching logs from explorer and producers.."
         mkdir -p 'logs'
-        nixops ssh explorer "cd /var/lib/cardano-node; rm -f logs-${tag}.tar.xz; tar cf logs-${tag}.tar.xz --xz logs/*.json"
-        nixops scp --from explorer "/var/lib/cardano-node/logs-${tag}.tar.xz" \
-          'logs/logs-explorer-generator.tar.xz'
 
-        echo "--( Fetching logs:  producers"
         nixops ssh-for-each --parallel \
-          --include $(cluster_sh producers) \
-          -- "cd /var/lib/cardano-node; rm -f logs-${tag}.tar.xz; tar cf node-\${HOSTNAME}-logs-${tag}.tar.xz --xz logs/*.json"
+          --include 'explorer' $(cluster_sh producers) \
+          -- "host=\$(hostname)
+              cd /var/lib/cardano-node &&
+              rm -f logs-${tag}.tar.xz             logs-\${host} &&
+              ln -s                           logs logs-\${host} &&
+              tar cf logs-\${HOSTNAME}.tar.xz --xz logs-\${host}/*.json"
 
-        for node in $(cluster_sh producers)
-        do nixops scp --from "${node}" \
-             "/var/lib/cardano-node/node-${node}-logs-${tag}.tar.xz" \
-             "logs/logs-node-${node}.tar.xz"
+        for mach in 'explorer' $(cluster_sh producers)
+        do nixops scp --from "${mach}" \
+             "/var/lib/cardano-node/logs-${mach}.tar.xz" \
+             "logs/logs-${mach}.tar.xz"
         done
+
+        echo "--( Reshuffling log archives.."
+
+
         popd >/dev/null
 }
 
